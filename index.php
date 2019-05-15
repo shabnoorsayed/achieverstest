@@ -8,14 +8,34 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Hello, world!</title>
+    <style>
+        img {
+            height: 150px;
+            width:150px;
+        }
+    </style>
   </head>
   <body>
       <h1><?php echo "Hello World";?></h1>
       <!-- Search form -->
-      <form class="form-inline ml-2 active-4 ">
+      <form class="form-inline ml-2 mb-3 active-4 ">
         <input id="searchBar" class="form-control form-control-sm mr-3 w-30" type="text" placeholder="Search" aria-label="Search">
         <button id="searchBtn" class="btn btn-primary" type=button>Search</button>
-    </form>
+     </form>
+
+     <table class="table table-striped" style="width:80%">
+         <thead>
+            <tr>
+                <th>Poster</th> 
+                <th>Title</th> 
+                <th>Release Date</th>
+                <th>Ratings</th>
+            </tr>
+        </thead>
+        <tbody id="moviesList">
+        </tbody>
+        
+    </table>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -32,10 +52,20 @@ $.ajax({
     method:"GET",
     dataType: 'jsonp'
     }).then(function(response) {
-        console.log(response);
+        var results = response.results;
+         $("tbody").html("");
+         if(results.length==0){
+             $("tbody").append("No results found.");
+         }else{
+            for(i=0; i < results.length; i++ ) {
+                var movieName = results[i].title;
+                var releaseDate = results[i].release_date;
+                var poster = "https://image.tmdb.org/t/p/w500"+ results[i].poster_path;
+                var vote_average = results[i].vote_average;
+                $("tbody").append("<tr> <td> <img src='"+poster+"'/> </td>    <td>"+movieName+"</td>   <td>"+releaseDate+"</td> <td>"+vote_average+"</td> </tr>");
+            }
+         }   
     });
-
-    alert(keyword);
 });
 </script>
 
