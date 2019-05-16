@@ -16,16 +16,17 @@
     </style>
   </head>
   <body>
-      <h1><?php echo "Hello World";?></h1>
+      <h1 class="ml-4"><i><?php echo "Movies list";?></i></h1>
       <!-- Search form -->
-      <form class="form-inline ml-2 mb-3 active-4 ">
+      <form class="form-inline ml-4 mb-3 active-4 ">
         <input id="searchBar" class="form-control form-control-sm mr-3 w-30" type="text" placeholder="Search" aria-label="Search">
         <button id="searchBtn" class="btn btn-primary" type=button>Search</button>
      </form>
 
-     <table class="table table-striped" style="width:80%">
+     <table id="movieTable" class="table table-striped ml-4" style="width:80%; display:none;">
          <thead>
             <tr>
+                <th>S.No</th>
                 <th>Poster</th> 
                 <th>Title</th> 
                 <th>Release Date</th>
@@ -44,27 +45,39 @@
   </body>
 </html>
 <script>
-$('#searchBtn').click(function(){
-    var keyword = $('#searchBar').val();
-    var api_key = "2dbad3723bef33dabede1791bb3c3f4c";
-$.ajax({
-    url:"https://api.themoviedb.org/3/search/movie?api_key="+ api_key +"&query="+ keyword,
-    method:"GET",
-    dataType: 'jsonp'
-    }).then(function(response) {
-        var results = response.results;
-         $("tbody").html("");
-         if(results.length==0){
-             $("tbody").append("No results found.");
-         }else{
-            for(i=0; i < results.length; i++ ) {
-                var movieName = results[i].title;
-                var releaseDate = results[i].release_date;
-                var poster = "https://image.tmdb.org/t/p/w500"+ results[i].poster_path;
-                var vote_average = results[i].vote_average;
-                $("tbody").append("<tr> <td> <img src='"+poster+"'/> </td>    <td>"+movieName+"</td>   <td>"+releaseDate+"</td> <td>"+vote_average+"</td> </tr>");
-            }
-         }   
+$('document').ready(function(){
+    $('#searchBtn').click(function(){
+        var keyword = $('#searchBar').val();
+        var api_key = "2dbad3723bef33dabede1791bb3c3f4c";
+    $.ajax({
+        url:"https://api.themoviedb.org/3/search/movie?api_key="+ api_key +"&query="+ keyword,
+        method:"GET",
+        dataType: 'jsonp'
+        }).then(function(response) {
+            var results = response.results;
+            $("tbody").html("");
+            $('#movieTable').show();
+            if(results.length==0){
+                $("tbody").append("No results found.");
+            }else{
+                
+                for(i=0; i < results.length; i++ ) {
+                    var serial = i+1;
+                    var movieName = results[i].title;
+                    var releaseDate = results[i].release_date;
+                    var poster = "https://image.tmdb.org/t/p/w500"+ results[i].poster_path;
+                    var vote_average = results[i].vote_average;
+                    $("tbody").append("<tr> <td>"+serial+"</td> <td> <img src='"+poster+"'/> </td>    <td>"+movieName+"</td>   <td>"+releaseDate+"</td> <td>"+vote_average+"</td> </tr>") ;
+                }     
+            }   
+        });
+    });
+    $('#searchBar').keypress(function (e) {
+        var key = e.which;
+        if(key == 13) {
+            $('#searchBtn').click();
+            return false;  
+        }
     });
 });
 </script>
